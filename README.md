@@ -15,13 +15,13 @@ Google in-app updates support for react-native. Specially created for android on
 
 ### Add Below Lines in MainActivity.java
 
-=> Import package:
+
 ```
 ...
 ...
 import com.logicwind.inappupdate.InAppUpdateUtils; // add this
 
-=> Create object :  
+// Create object :  
 private InAppUpdateUtils appUpdateUtils;
 
 
