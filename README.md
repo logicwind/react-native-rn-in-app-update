@@ -50,3 +50,7 @@ protected void onResume() {
 ```
 
 ### That's it. Configuration done. No need to add anything in your application js file.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
