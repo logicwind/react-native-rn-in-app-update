@@ -1,29 +1,33 @@
 {
     "name": "react-native-rn-in-app-update",
-    "title": "React Native Rn In App Update",
     "version": "1.0.0",
     "description": "Google in app update plugin for react-native (Android only)",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
-        "type": "git",
-        "url": "git+https://github.com/logicwind/react-native-rn-in-app-update.git",
-        "baseUrl": "https://github.com/logicwind/react-native-rn-in-app-update"
+      "type": "git",
+      "url": "git+https://github.com/logicwind/react-native-rn-in-app-update.git"
     },
     "keywords": [
-        "react-native"
+      "react-native",
+      "android-in-app-update"
     ],
+    "author": "Logicwind",
     "license": "MIT",
     "licenseFilename": "LICENSE",
     "readmeFilename": "README.md",
     "peerDependencies": {
-        "react": "^16.8.1",
-        "react-native": ">=0.59.0-rc.0 <1.0.x"
+      "react": "^16.8.1",
+      "react-native": ">=0.59.0-rc.0 <1.0.x"
     },
     "devDependencies": {
-        "react": "^16.8.3",
-        "react-native": "^0.59.10"
-    }
-}
+      "react": "^16.8.3",
+      "react-native": "^0.59.10"
+    },
+    "bugs": {
+      "url": "https://github.com/logicwind/react-native-rn-in-app-update/issues"
+    },
+    "homepage": "https://github.com/logicwind/react-native-rn-in-app-update#readme"
+  }
