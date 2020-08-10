@@ -9,12 +9,12 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   react-native-rn-in-app-update
                    DESC
-  s.homepage     = "https://github.com/github_account/react-native-rn-in-app-update"
+  s.homepage     = "https://github.com/logicwind/react-native-rn-in-app-update"
   s.license      = "MIT"
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
   s.authors      = { "Your Name" => "yourname@email.com" }
   s.platforms    = { :ios => "9.0" }
-  s.source       = { :git => "https://github.com/github_account/react-native-rn-in-app-update.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/logicwind/react-native-rn-in-app-update.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,swift}"
   s.requires_arc = true
