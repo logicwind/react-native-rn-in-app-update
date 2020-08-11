@@ -10,6 +10,22 @@ Google in-app updates support for react-native. Specially created for android on
 
 `$ react-native link react-native-rn-in-app-update`
 
+### Android
+only react-native link require
+
+
+## Linking  (RN >= 0.60)
+
+### Android
+It will auto linked after installing package
+
+
+### IOS
+No native implementation for ios. If project show missing pod error then perform following step:
+
+```
+cd ios && pod install
+```
 
 ## Additional configuration in android (Required)
 
