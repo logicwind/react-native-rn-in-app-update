@@ -44,7 +44,7 @@ public class InAppUpdateUtils {
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
         // and checks the update priority.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            Log.e("mye", "appUpdateInfo " + appUpdateInfo);
+            Log.e("mye", "appUpdateInfo " + appUpdateInfo.availableVersionCode() + "packageName " + appUpdateInfo.packageName() + "updateAvailability " + appUpdateInfo.updateAvailability() + "updatePriority " + appUpdateInfo.updatePriority());
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                     && appUpdateInfo.updatePriority() >= HIGH_PRIORITY_UPDATE) {
                 try {
