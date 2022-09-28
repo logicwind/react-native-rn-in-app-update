@@ -1,6 +1,6 @@
 {
   "name": "react-native-rn-in-app-update",
-  "version": "1.0.2",
+  "version": "1.0.2-beta",
   "description": "Google in app update plugin for react-native (Android only)",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
