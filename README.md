@@ -67,6 +67,10 @@ protected void onResume() {
 
 ### That's it. Configuration done. No need to add anything in your application js file.
 
+
+## How to test in-app-update?
+Please find testing instruction [here](https://developer.android.com/guide/playcore/in-app-updates/test#:~:text=Use%20internal%20app%20sharing%20to,to%20share%20your%20app%20internally)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
