@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -14,21 +16,15 @@ import com.google.android.play.core.install.InstallStateUpdatedListener;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.OnSuccessListener;
-import com.google.android.play.core.tasks.Task;
 
 public class InAppUpdateUtils {
 
     private static final int MY_REQUEST_CODE = 1056;
     private AppUpdateManager appUpdateManager;
     private Activity activity;
-    private InstallStateUpdatedListener listener = new InstallStateUpdatedListener() {
-        @Override
-        public void onStateUpdate(InstallState state) {
-            Log.e("mye", "state" + state.installStatus() + " --  " + state.installErrorCode());
-            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                showDialog();
-            }
+    private InstallStateUpdatedListener listener = state -> {
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            showDialog();
         }
     };
     private int HIGH_PRIORITY_UPDATE = 5;
@@ -44,7 +40,6 @@ public class InAppUpdateUtils {
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
         // and checks the update priority.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            Log.e("mye", "appUpdateInfo " + appUpdateInfo.availableVersionCode() + "packageName " + appUpdateInfo.packageName() + "updateAvailability " + appUpdateInfo.updateAvailability() + "updatePriority " + appUpdateInfo.updatePriority());
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                     && appUpdateInfo.updatePriority() >= HIGH_PRIORITY_UPDATE) {
                 try {
