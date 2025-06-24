@@ -58,6 +58,27 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun getUpdateInfo(promise: Promise) {
+    appUpdateManager.appUpdateInfo
+      .addOnSuccessListener { info ->
+        val map = Arguments.createMap()
+        map.putInt("updateAvailability", info.updateAvailability())
+        map.putBoolean("immediateAllowed", info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+        map.putBoolean("flexibleAllowed", info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
+        map.putInt("versionCode", info.availableVersionCode())
+        info.clientVersionStalenessDays()?.let {
+          map.putInt("clientVersionStalenessDays", it)
+        }
+        map.putDouble("totalBytesToDownload", info.totalBytesToDownload().toDouble())
+        map.putString("packageName", info.packageName())
+        promise.resolve(map)
+      }
+      .addOnFailureListener { e ->
+        promise.reject("UPDATE_INFO_FAILED", "Failed to retrieve update info", e)
+      }
+  }
+
   override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
     // No-op
   }

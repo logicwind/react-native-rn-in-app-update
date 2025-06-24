@@ -1,5 +1,9 @@
 import { NativeModules, Platform } from 'react-native';
 
+import type { UpdateInfo, UpdateType } from './types';
+
+export * from './types';
+
 const LINKING_ERROR =
   `The package 'react-native-rn-in-app-update' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -27,12 +31,26 @@ const RnInAppUpdate = NativeModules.RnInAppUpdate
  * @returns A Promise that resolves when the update flow is started, or rejects if not available or fails.
  */
 export const showUpdatePopup = (
-  type: 'immediate' | 'flexible' = 'immediate'
+  type: UpdateType = 'immediate'
 ): Promise<void> => {
-  if (Platform.OS === 'android') {
-    const updateType = type === 'immediate' ? 0 : 1;
-    return RnInAppUpdate.showUpdatePopup(updateType);
+  if (Platform.OS !== 'android') {
+    return Promise.resolve();
   }
 
-  return Promise.resolve();
+  const updateType = type === 'immediate' ? 0 : 1;
+  return RnInAppUpdate.showUpdatePopup(updateType);
+};
+
+/**
+ * Gets metadata about the available update from the Play Store.
+ *
+ * @returns A promise that resolves with update info, or rejects on error or unsupported platform.
+ */
+export const getUpdateInfo = async (): Promise<UpdateInfo | null> => {
+  if (Platform.OS !== 'android') {
+    return null;
+  }
+
+  const info = await RnInAppUpdate.getUpdateInfo();
+  return info;
 };
