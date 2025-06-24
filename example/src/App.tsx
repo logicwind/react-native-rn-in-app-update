@@ -3,11 +3,16 @@ import { Alert, Button, Platform, StyleSheet, Text, View } from 'react-native';
 import {
   getUpdateInfo,
   showUpdatePopup,
+  startFlexibleUpdateWithProgress,
+  subscribeToUpdateProgress,
   type UpdateInfo,
 } from 'react-native-rn-in-app-update';
 
 const App = () => {
   const [updateInfo, setUpdateInfo] = useState<null | UpdateInfo>(null);
+  const [progress, setProgress] = useState<null | { percent: number }>({
+    percent: 0,
+  });
 
   useEffect(() => {
     const checkUpdate = async () => {
@@ -25,6 +30,23 @@ const App = () => {
     };
 
     checkUpdate();
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+
+    const unsubscribe = subscribeToUpdateProgress(
+      ({ bytesDownloaded, totalBytesToDownload }) => {
+        if (totalBytesToDownload > 0) {
+          const percent = (bytesDownloaded / totalBytesToDownload) * 100;
+          setProgress({ percent });
+        }
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleCheckFlexibleUpdate = async () => {
@@ -49,6 +71,17 @@ const App = () => {
     }
   };
 
+  const handleFlexibleUpdate = async () => {
+    try {
+      await startFlexibleUpdateWithProgress();
+    } catch (err: any) {
+      Alert.alert(
+        'Update Error',
+        err?.message || 'Could not start flexible update'
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>In-App Update Demo</Text>
@@ -63,6 +96,17 @@ const App = () => {
             title="Check for Immediate Update"
             onPress={handleCheckImmediateUpdate}
           />
+          <Button
+            title="Start Flexible Update"
+            onPress={handleFlexibleUpdate}
+          />
+
+          {progress && progress.percent > 0 && progress.percent < 100 && (
+            <Text style={styles.progress}>
+              Downloading Update: {progress.percent.toFixed(1)}%
+            </Text>
+          )}
+
           {updateInfo && (
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Update Info:</Text>
@@ -116,6 +160,10 @@ const styles = StyleSheet.create({
   innerContainer: {
     rowGap: 20,
     width: '100%',
+  },
+  progress: {
+    color: '#007bff',
+    fontWeight: '500',
   },
   infoBox: {
     padding: 10,

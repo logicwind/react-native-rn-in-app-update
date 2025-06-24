@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { DeviceEventEmitter, NativeModules, Platform } from 'react-native';
 
 import type { UpdateInfo, UpdateType } from './types';
 
@@ -53,4 +53,31 @@ export const getUpdateInfo = async (): Promise<UpdateInfo | null> => {
 
   const info = await RnInAppUpdate.getUpdateInfo();
   return info;
+};
+
+/**
+ * Starts a flexible update and listens for download progress.
+ * Emits progress events via DeviceEventEmitter.
+ */
+export const startFlexibleUpdateWithProgress = async (): Promise<void> => {
+  if (Platform.OS !== 'android') return;
+
+  await RnInAppUpdate.startFlexibleUpdateWithProgress();
+};
+
+/**
+ * Subscribes to update progress events
+ */
+export const subscribeToUpdateProgress = (
+  callback: (progress: {
+    status: number;
+    bytesDownloaded: number;
+    totalBytesToDownload: number;
+  }) => void
+) => {
+  const subscription = DeviceEventEmitter.addListener(
+    'in_app_update_progress',
+    callback
+  );
+  return () => subscription.remove(); // return unsubscribe function
 };
