@@ -18,12 +18,60 @@ yarn add react-native-rn-in-app-update
 
 ## Usage
 
+### Function 1: `showUpdatePopup`
+
 Import and use the `showUpdatePopup` function. it supports 2 update type **immediate** and **flexible**
 
 ```tsx md title="App.tsx"
 import { showUpdatePopup } from 'react-native-rn-in-app-update';
 
 <Button title="Get Update" onPress={() => showUpdatePopup('immediate')} />;
+```
+
+### Function 2: `getUpdateInfo`
+
+`getUpdateInfo` is used to get information about the available update.
+
+```tsx md title="App.tsx"
+const info = await getUpdateInfo();
+```
+
+### Function 3: `startFlexibleUpdateWithProgress`
+
+`startFlexibleUpdateWithProgress` is used to start flexible update while also getting the download percentage.
+
+```tsx md title="App.tsx"
+import { startFlexibleUpdateWithProgress } from 'react-native-rn-in-app-update';
+
+<Button
+  title="Start Flexible Update"
+  onPress={() => startFlexibleUpdateWithProgress()}
+/>;
+```
+
+### Function 4: `subscribeToUpdateProgress`
+
+`subscribeToUpdateProgress` is used to get the download percentage when updating app with `startFlexibleUpdateWithProgress`.
+
+```tsx md title="App.tsx"
+import { subscribeToUpdateProgress } from 'react-native-rn-in-app-update';
+
+useEffect(() => {
+  if (Platform.OS !== 'android') return;
+
+  const unsubscribe = subscribeToUpdateProgress(
+    ({ bytesDownloaded, totalBytesToDownload }) => {
+      if (totalBytesToDownload > 0) {
+        const percent = (bytesDownloaded / totalBytesToDownload) * 100;
+        console.log({ percent });
+      }
+    }
+  );
+
+  return () => {
+    unsubscribe();
+  };
+}, []);
 ```
 
 ## How to Test In-App Updates on Android
