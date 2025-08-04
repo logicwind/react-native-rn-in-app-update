@@ -1,1 +1,0 @@
-{"version":3,"names":["NativeModules","RnInAppUpdate"],"sources":["index.tsx"],"sourcesContent":["import { NativeModules } from 'react-native';\n\nconst { RnInAppUpdate } = NativeModules;\n\nexport default RnInAppUpdate;\n"],"mappings":"AAAA,SAASA,aAAT,QAA8B,cAA9B;AAEA,MAAM;EAAEC;AAAF,IAAoBD,aAA1B;AAEA,eAAeC,aAAf"}
