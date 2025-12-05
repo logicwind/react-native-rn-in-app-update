@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import com.facebook.react.bridge.*
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 
 class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
@@ -26,7 +29,7 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun showUpdatePopup(updateType: Int, promise: Promise) {
-    val activity: Activity? = currentActivity
+    val activity: Activity? = getCurrentActivity()
     if (activity == null) {
       promise.reject("NO_ACTIVITY", "Current activity is null")
       return
@@ -50,6 +53,79 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
         }
       } else {
         promise.reject("UPDATE_NOT_AVAILABLE", "Update not available or type not allowed")
+      }
+    }
+
+    appUpdateInfoTask.addOnFailureListener { e ->
+      promise.reject("UPDATE_ERROR", "Failed to get update info", e)
+    }
+  }
+
+  @ReactMethod
+  fun getUpdateInfo(promise: Promise) {
+    appUpdateManager.appUpdateInfo
+      .addOnSuccessListener { info ->
+        val map = Arguments.createMap()
+        map.putInt("updateAvailability", info.updateAvailability())
+        map.putBoolean("immediateAllowed", info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+        map.putBoolean("flexibleAllowed", info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
+        map.putInt("versionCode", info.availableVersionCode())
+        info.clientVersionStalenessDays()?.let {
+          map.putInt("clientVersionStalenessDays", it)
+        }
+        map.putDouble("totalBytesToDownload", info.totalBytesToDownload().toDouble())
+        map.putString("packageName", info.packageName())
+        promise.resolve(map)
+      }
+      .addOnFailureListener { e ->
+        promise.reject("UPDATE_INFO_FAILED", "Failed to retrieve update info", e)
+      }
+  }
+
+  @ReactMethod
+  fun startFlexibleUpdateWithProgress(promise: Promise) {
+    val activity = getCurrentActivity()
+    if (activity == null) {
+      promise.reject("NO_ACTIVITY", "Current activity is null")
+      return
+    }
+
+    val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+    appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+      if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+          appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+
+        // Register progress listener
+        appUpdateManager.registerListener { state: InstallState ->
+          val map = Arguments.createMap()
+          map.putInt("status", state.installStatus())
+          map.putDouble("bytesDownloaded", state.bytesDownloaded().toDouble())
+          map.putDouble("totalBytesToDownload", state.totalBytesToDownload().toDouble())
+
+          reactApplicationContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            .emit("in_app_update_progress", map)
+
+          // Automatically call completeUpdate when downloaded
+          if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            appUpdateManager.completeUpdate()
+          }
+        }
+
+        try {
+          appUpdateManager.startUpdateFlowForResult(
+            appUpdateInfo,
+            AppUpdateType.FLEXIBLE,
+            activity,
+            REQUEST_CODE
+          )
+          promise.resolve("STARTED")
+        } catch (e: IntentSender.SendIntentException) {
+          promise.reject("INTENT_ERROR", "Error starting update flow", e)
+        }
+      } else {
+        promise.reject("UPDATE_NOT_AVAILABLE", "No flexible update available")
       }
     }
 
