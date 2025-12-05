@@ -1,6 +1,6 @@
 {
   "name": "react-native-rn-in-app-update",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A minimal React Native module that displays the native Android in-app update popup using the Play Core library. Supports both immediate and flexible update types.",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
