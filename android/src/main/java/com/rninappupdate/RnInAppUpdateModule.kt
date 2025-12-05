@@ -29,7 +29,7 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun showUpdatePopup(updateType: Int, promise: Promise) {
-    val activity: Activity? = currentActivity
+    val activity: Activity? = getCurrentActivity()
     if (activity == null) {
       promise.reject("NO_ACTIVITY", "Current activity is null")
       return
@@ -84,7 +84,7 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun startFlexibleUpdateWithProgress(promise: Promise) {
-    val activity = currentActivity
+    val activity = getCurrentActivity()
     if (activity == null) {
       promise.reject("NO_ACTIVITY", "Current activity is null")
       return
