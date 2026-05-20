@@ -52,12 +52,12 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
           promise.reject("INTENT_ERROR", "Error starting update flow", e)
         }
       } else {
-        promise.reject("UPDATE_NOT_AVAILABLE", "Update not available or type not allowed")
+        promise.resolve("UPDATE_NOT_AVAILABLE")
       }
     }
 
-    appUpdateInfoTask.addOnFailureListener { e ->
-      promise.reject("UPDATE_ERROR", "Failed to get update info", e)
+    appUpdateInfoTask.addOnFailureListener { _ ->
+      promise.resolve("UPDATE_CHECK_FAILED")
     }
   }
 
@@ -77,8 +77,8 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
         map.putString("packageName", info.packageName())
         promise.resolve(map)
       }
-      .addOnFailureListener { e ->
-        promise.reject("UPDATE_INFO_FAILED", "Failed to retrieve update info", e)
+      .addOnFailureListener { _ ->
+        promise.resolve(null)
       }
   }
 
@@ -125,12 +125,12 @@ class RnInAppUpdateModule(reactContext: ReactApplicationContext) :
           promise.reject("INTENT_ERROR", "Error starting update flow", e)
         }
       } else {
-        promise.reject("UPDATE_NOT_AVAILABLE", "No flexible update available")
+        promise.resolve("UPDATE_NOT_AVAILABLE")
       }
     }
 
-    appUpdateInfoTask.addOnFailureListener { e ->
-      promise.reject("UPDATE_ERROR", "Failed to get update info", e)
+    appUpdateInfoTask.addOnFailureListener { _ ->
+      promise.resolve("UPDATE_CHECK_FAILED")
     }
   }
 

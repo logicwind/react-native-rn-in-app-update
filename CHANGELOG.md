@@ -1,3 +1,9 @@
+## 1.3.0
+
+- Fixed unhandled promise rejections causing noise in error tracking tools (e.g. Sentry)
+- `showUpdatePopup` and `startFlexibleUpdateWithProgress` now resolve with `"UPDATE_NOT_AVAILABLE"` when no update exists, and `"UPDATE_CHECK_FAILED"` when Play Core cannot reach the Play Store
+- `getUpdateInfo` now resolves with `null` on failure instead of rejecting
+
 ## 1.2.0
 
 - Added funtion to get update details
